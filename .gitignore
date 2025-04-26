@@ -10,3 +10,7 @@ backend/dist/
 # Frontend
 frontend/node_modules/
 frontend/dist/
+
+# ESLint/Prettier кэш
+.eslintcache
+.prettiercache
