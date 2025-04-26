@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum AuthType {
+  EMAIL
+  GOOGLE
+}
+
+enum AlgorithmCategory {
+  SORTING
+  TREE
+  GRAPH
+}
+
+enum AlgorithmStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  LOCKED
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model User {
+  id            String          @id @default(uuid()) @db.Uuid
+  email         String?         @unique @db.VarChar(255)
+  hash          String          @map("password_hash")
+  nickname      String          @unique @db.VarChar(50)
+  first_name    String?
+  last_name     String?
+  auth_type     AuthType        @default(EMAIL)
+  role          Role            @default(USER)
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  algorithms    Algorithm[]
+  UserAlgorithm UserAlgorithm[]
+
+  @@map("users")
+}
+
+model Algorithm {
+  id          String            @id @default(uuid())
+  name        String            @unique @db.VarChar(50)
+  description String            @db.VarChar(2047)
+  score       Int               @default(0)
+  category    AlgorithmCategory
+  difficulty  Difficulty
+  order       Int               @unique
+  isLocked    Boolean           @default(true)
+  users       UserAlgorithm[]
+  created_at  DateTime          @default(now())
+  updated_at  DateTime          @updatedAt
+  User        User?             @relation(fields: [userId], references: [id])
+  userId      String?           @db.Uuid
+
+  @@map("algorithms")
+}
+
+model UserAlgorithm {
+  user_id      String
+  user         User            @relation(fields: [user_id], references: [id])
+  algorithm_id String
+  algorithm    Algorithm       @relation(fields: [algorithm_id], references: [id])
+  status       AlgorithmStatus @default(NOT_STARTED)
+  completed_at DateTime?
+  score        Int?
+  attempts     Int             @default(0)
+
+  @@id([user_id, algorithm_id])
+  @@map("user_algorithms")
+}
