@@ -16,6 +16,16 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@prisma": ["src/modules/prisma"],
+      "@prisma/*": ["src/modules/prisma/*"],
+      "@user": ["src/modules/user"],
+      "@user/*": ["src/modules/user/*"],
+      "@auth": ["src/modules/auth"],
+      "@auth/*": ["src/modules/auth/*"],
+      "@algo": ["src/modules/algo"],
+      "@algo/*": ["src/modules/algo/*"]
+    }
   }
 }
