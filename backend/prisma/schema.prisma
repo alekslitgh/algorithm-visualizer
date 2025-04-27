@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -38,18 +38,19 @@ enum Difficulty {
 }
 
 model User {
-  id            String          @id @default(uuid()) @db.Uuid
-  email         String?         @unique @db.VarChar(255)
+  id            String          @id @default(uuid()) @db.VarChar(36)
+  email         String?         @unique
   hash          String          @map("password_hash")
   nickname      String          @unique @db.VarChar(50)
   first_name    String?
   last_name     String?
   auth_type     AuthType        @default(EMAIL)
   role          Role            @default(USER)
-  created_at    DateTime        @default(now())
-  updated_at    DateTime        @updatedAt
+  created_at    DateTime        @default(now()) @map("created_at")
+  updated_at    DateTime        @updatedAt @map("updated_at")
   algorithms    Algorithm[]
   UserAlgorithm UserAlgorithm[]
+  Token         Token[]
 
   @@map("users")
 }
@@ -64,10 +65,10 @@ model Algorithm {
   order       Int               @unique
   isLocked    Boolean           @default(true)
   users       UserAlgorithm[]
-  created_at  DateTime          @default(now())
-  updated_at  DateTime          @updatedAt
+  created_at  DateTime          @default(now()) @map("created_at")
+  updated_at  DateTime          @updatedAt @map("updated_at")
   User        User?             @relation(fields: [userId], references: [id])
-  userId      String?           @db.Uuid
+  userId      String?           @db.VarChar(36)
 
   @@map("algorithms")
 }
@@ -84,4 +85,13 @@ model UserAlgorithm {
 
   @@id([user_id, algorithm_id])
   @@map("user_algorithms")
+}
+
+model Token {
+  token  String   @unique
+  exp    DateTime
+  user   User     @relation(fields: [userId], references: [id])
+  userId String   @db.VarChar(36)
+
+  @@map("tokens")
 }
