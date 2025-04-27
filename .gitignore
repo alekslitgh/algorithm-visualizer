@@ -14,3 +14,6 @@ frontend/dist/
 # ESLint/Prettier кэш
 .eslintcache
 .prettiercache
+
+# Prisma generated files
+backend/generated/
