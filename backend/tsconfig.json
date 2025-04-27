@@ -25,7 +25,9 @@
       "@auth": ["src/modules/auth"],
       "@auth/*": ["src/modules/auth/*"],
       "@algo": ["src/modules/algo"],
-      "@algo/*": ["src/modules/algo/*"]
+      "@algo/*": ["src/modules/algo/*"],
+      "@config": ["src/config"],
+      "@config/*": ["src/config/*"]
     }
   }
 }
